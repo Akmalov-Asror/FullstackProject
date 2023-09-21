@@ -1,0 +1,498 @@
+﻿@page "/aboutcourse"
+@using Blazor.Client.Service
+@using Blazor.Client.Dto
+@using Blazor.Shared
+@inject IJSRuntime JsRuntime
+@inject ApiServices ApiServices
+@inject LocalStorageService LocalStorageService
+@inject NavigationManager NavigationManager
+
+<head>
+    <script src="https://kit.fontawesome.com/82de9758c4.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+            text-decoration: none;
+        }
+
+        ul {
+            margin-bottom: 0;
+        }
+
+        a {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        header {
+            background-color: #fff;
+        }
+
+        .container-s {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header__container {
+            padding: 14px 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .header__container img {
+                margin: 0 auto;
+            }
+
+        .header__list {
+            display: flex;
+            gap: 30px;
+        }
+
+        .header__auth {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .auth-registration {
+            padding: 10px 34px;
+            color: #fff;
+            background-color: #35A4D9;
+            border-radius: 6px;
+        }
+
+        .footer {
+            background: #111;
+            color: #949393 !important;
+        }
+
+        .footer__container {
+            display: flex;
+            gap: 250px;
+            padding-top: 70px;
+            padding-bottom: 54px;
+        }
+
+        .footer__item {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .footer__logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer__item img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+        }
+
+        .footer h6 {
+            color: #fff;
+        }
+
+        .footer h1 {
+            color: #fff;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .footer__p {
+            text-align: center;
+            color: #545454;
+            font-size: 12px;
+            padding-bottom: 24px;
+        }
+
+        .social__logo {
+            display: flex;
+            gap: 20px;
+            padding-top: 30px;
+        }
+
+        .footer__item a {
+            cursor: pointer;
+            color: #949393;
+        }
+
+        .social__logo {
+            cursor: pointer;
+        }
+
+        .header__logo img {
+            width: 42px;
+            height: 42px;
+        }
+
+        .header__logo {
+            display: flex;
+            align-items: center;
+            margin-right: auto;
+            cursor: pointer;
+        }
+
+
+        .contact__bg {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 38px;
+            color: #fff;
+            background-image: url(https://t4.ftcdn.net/jpg/01/84/91/27/240_F_184912716_qwpfSzNyX8BGtsXHJTgpTmaPCOPEwhRd.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 514px;
+        }
+
+            .contact__bg h1 {
+                font-size: 72px;
+                font-weight: 700;
+            }
+
+            .contact__bg p {
+                font-size: 24px;
+                line-height: 36px;
+                width: 675px;
+                text-align: center;
+            }
+
+        .about {
+            margin-top: 110px;
+        }
+
+        .descr {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 130px;
+        }
+
+        .feedback {
+            display: flex;
+            gap: 30px;
+        }
+
+        .feedback__div h5 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .feedback__item p {
+            padding: 49px 40px;
+            background-color: #E9E9E9;
+            border-radius: 40px;
+            font-size: 22px;
+            line-height: 34px;
+        }
+
+        .feedback__item h6 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 400;
+            margin-top: 10px;
+        }
+
+        .row {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 130px;
+        }
+
+        .col-4 {
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 0;
+        }
+
+            .col-4 p {
+                padding: 49px 40px;
+                background-color: #E9E9E9;
+                border-radius: 40px;
+                font-size: 22px;
+                line-height: 34px;
+            }
+
+            .col-4 h6{
+                text-align:center;
+            }
+
+        .result__descr h1 {
+            font-size: 32px;
+            margin-bottom: 60px;
+        }
+
+        .result__descr p {
+            font-size: 18px;
+            line-height: 28px;
+            font-weight: 400;
+            margin-bottom: 60px;
+        }
+
+        .price {
+            display: flex;
+            gap: 25px;
+        }
+
+        .price-p {
+            font-size: 34px;
+            font-weight: 400;
+        }
+
+        .price-value {
+            font-size: 38px;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 18px 60px;
+            background-color: #35A4D9 !important;
+            border-radius: 10px;
+            color: #fff !important;
+        }
+
+        .btn__div {
+            display: flex;
+            justify-content: center;
+            margin-top: 130px;
+            margin-bottom: 150px;
+        }
+
+        .active {
+            color: #113BA1 !important;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .open {
+            display: flex;
+            align-items: center;
+            gap: 123.922px;
+        }
+
+        .open__gap {
+            gap: 89.766px !important;
+        }
+        .confirm{
+            font-size:30px;
+        }
+    </style>
+</head>
+<header>
+    <div class="container-s">
+        <div class="header__container">
+            <div class="header__logo">
+                <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
+                <h1>URANUS</h1>
+            </div>
+            <Header />
+        </div>
+    </div>
+</header>
+<section class="contact__bg">
+    <h1>@course.Title</h1>
+    <p>@course.Description</p>
+</section>
+<section class="about">
+    <div class="container-s">
+        <div class="descr">
+            <p>@education.Title</p>
+            <p>@education.Description</p>
+            <p>@education.End</p>
+            </div>
+        <div class="feedback__div">
+            <h5>Отзывы</h5>
+            <div class="row">
+                @if (feedbacks.Count <= 0)
+                {
+                    <h1>No feedbacks...</h1>
+                }
+                else
+                {
+                    @foreach (var feedback in feedbacks)
+                    {
+                        <div class="col-4">
+                            <p>@feedback.Description</p>
+                            <h6>@feedback.User.FullName</h6>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section__result">
+    <div class="container-s">
+        <div class="result__descr">
+            <h1>Результаты наших учеников</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elit velit, mattis id congue eu, eleifend non arcu. Nullam tempor porta malesuada. Cras dignissim consectetur cursus. Vivamus id maximus purus, ut porttitor ipsum. Cras finibus velit ac est rutrum, vitae scelerisque diam elementum. Mauris in dictum erat. Sed ac fringilla lorem. In hac habitasse platea dictumst. Sed efficitur diam nec augue venenatis pharetra. Ut varius eleifend augue sed eleifend.</p>
+        </div>
+        <div class="row">
+            @if (results.Count <= 0)
+            {
+                <h1>No results...</h1>
+            }
+            else
+            {
+                @foreach (var result in results)
+                {
+                    <div class="col-4">
+                        <img src=@result.Url alt="" class="col-4">
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container-s">
+        <div class="price">
+            <p class="price-p">Цена:</p>
+            <p class="price-value">@course.Price сум</p>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container-s btn__div">
+        @if (IsConfirmed)
+        {
+            <button class="btn" @onclick="Confirm">Записаться на курс</button>
+        }
+        else
+        {
+            <p class="confirm">Вы записались на курс</p>
+        }
+    </div>
+</section>
+<Footer />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script>
+    function hide() {
+        const div1 = document.getElementById("div1");
+        const div2 = document.getElementById("div2");
+
+        div1.classList.add("open");
+        div1.classList.remove("hide");
+        div2.classList.remove("open");
+        div2.classList.add("hide");
+    }
+
+    function open() {
+        const div1 = document.getElementById("div1");
+        const div2 = document.getElementById("div2");
+
+        div2.classList.remove("hide");
+        div2.classList.add("open");
+        div2.classList.add("open__gap");
+        div1.classList.remove("open");
+        div1.classList.add("hide");
+    }
+</script>
+@code {
+    private bool IsConfirmed = true;
+    private string UserEmail = String.Empty;
+    private Education education = new Education();
+    private Course course = new Course();
+    List<Feedback> feedbacks = new List<Feedback>();
+    List<Result> results = new List<Result>();
+    List<Course> userCourses = new List<Course>();
+    private string courseId;
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        var id  = await LocalStorageService.GetCourseId();
+        courseId = id;
+
+        var email = await LocalStorageService.GetEmailFromLocalStorage();
+        UserEmail = email;
+        if (string.IsNullOrEmpty(UserEmail))
+        {
+            await JsRuntime.InvokeVoidAsync("hide");
+
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("open");
+        }
+
+        var courseResult = await ApiServices.GetCourse(courseId);
+        if (courseResult is not null)
+        {
+            course = courseResult;
+        }
+
+        var result = await ApiServices.GetEducation(courseId);
+        if (result is not null)
+        {
+            education = result;
+        }
+
+        var feedbackResult = await ApiServices.GetFeedback(education.Id.ToString());
+        if (feedbackResult is not null)
+        {
+            feedbacks = feedbackResult;
+        }
+
+        var response = await ApiServices.GetResults(education.Id.ToString());
+        if (response is not null)
+        {
+            results = response;
+        }
+
+        var userCoursesResult = await ApiServices.GetUserCourses(email);
+        userCourses = userCoursesResult;
+        var any = userCourses.Any(c => c.Id == Convert.ToInt32(courseId));
+        if (any)
+        {
+            IsConfirmed = false;
+            StateHasChanged();
+        }
+    }
+
+    async void Confirm()
+    {
+            var email = await LocalStorageService.GetEmailFromLocalStorage();
+            if (string.IsNullOrEmpty(email))
+            {
+                NavigationManager.NavigateTo(NavigationUrls.ToLogin);
+            }
+            UserCourseDTO courseDto = new UserCourseDTO();
+            courseDto.Email = email;
+            courseDto.CourseId = Convert.ToInt32(courseId);
+            try
+            {
+                await ApiServices.AddCourse(courseDto);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+
+            }
+            IsConfirmed = false;
+            StateHasChanged();
+        }
+
+}

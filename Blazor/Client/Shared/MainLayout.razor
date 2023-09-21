@@ -1,0 +1,9 @@
+﻿@inherits LayoutComponentBase
+
+@Body
+
+<script>
+    window.addEventListener('beforeunload', function (e) {
+        localStorage.clear();
+    });
+</script>

@@ -1,0 +1,113 @@
+﻿@using Blazor.Client.Service
+@inject NavigationManager NavigationManager
+@inject LocalStorageService LocalStorageService
+
+<div id="div1" class="open">
+    <ul class="header__list">
+        <li>
+            <a @onclick="ToCourses">Все курсы</a>
+        </li>
+        <li>
+            <a @onclick="ToLogin">Мои курсы</a>
+        </li>
+        <li>
+            <a @onclick="ToLogin">Домашние задания</a>
+        </li>
+        <li>
+            <a @onclick="ToAbout">О нас</a>
+        </li>
+        <li>
+            <a @onclick="ToContact">Контакты</a>
+        </li>
+    </ul>
+    <div class="header__auth">
+        <a @onclick="ToLogin">Войти</a>
+        <a @onclick="ToReg"class="auth-registration">Регистрация</a>
+    </div>
+</div>
+<div id="div2" class="hide">
+    <ul class="header__list">
+        <li>
+            <a @onclick="ToCourses">Все курсы</a>
+        </li>
+        <li>
+            <a @onclick="ToUser">Мои курсы</a>
+        </li>
+        <li>
+            <a @onclick="ToHomework">Домашние задания</a>
+        </li>
+        <li>
+            <a>О нас</a>
+        </li>
+        <li>
+            <a @onclick="ToContact">Контакты</a>
+        </li>
+    </ul>
+    <div class="header__auth">
+        <a>@UserEmail</a>
+        <a @onclick="LogOut">Log Out</a>
+    </div>
+</div>
+
+@code {
+    private string UserEmail = String.Empty;
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        var email = await LocalStorageService.GetEmailFromLocalStorage();
+        UserEmail = email;
+    }
+
+    void ToCourses()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToCourse);
+    }
+
+    void ToContact()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToContact);
+    }
+
+    void ToLogin()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToLogin);
+    }
+
+    void ToReg()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToReg);
+    }
+
+    void ToMain()
+    {
+        if (string.IsNullOrEmpty(UserEmail))
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/user");
+        }
+    }
+
+    void ToUser()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToUser);
+    }
+
+    void ToHomework()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToHomework);
+    }
+
+    void LogOut()
+    {
+        LocalStorageService.LogOut();
+        NavigationManager.NavigateTo(NavigationUrls.ToMain);
+    }
+
+    void ToAbout()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToAbout);
+    }
+}

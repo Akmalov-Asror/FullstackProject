@@ -1,0 +1,68 @@
+﻿@using Blazor.Client.Service
+@inject NavigationManager NavigationManager
+@inject LocalStorageService LocalStorageService
+
+<ul class="header__list">
+    <li>
+        <a @onclick="ToAllCourse">Все курсы</a>
+    </li>
+    <li>
+        <a @onclick="ToUser">Мои курсы</a>
+    </li>
+    <li>
+        <a @onclick="ToHomework">Домашние задания</a>
+    </li>
+    <li>
+        <a @onclick="ToAbout">О нас</a>
+    </li>
+    <li>
+        <a @onclick="ToContact">Контакты</a>
+    </li>
+</ul>
+<div class="header__auth">
+    <a>@UserEmail</a>
+    <a @onclick="LogOut">Log Out</a>
+</div>
+
+
+@code {
+
+    private string UserEmail { get; set; } = string.Empty;
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        var email = await LocalStorageService.GetEmailFromLocalStorage();
+        UserEmail = email;
+    }
+
+    void ToUser()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToUser);
+    }
+
+    void ToHomework()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToHomework);
+    }
+
+    void ToAbout()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToAbout);
+    }
+
+    void ToContact()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToContact);
+    }
+
+    void ToAllCourse()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToCourse);
+    }
+
+    void LogOut()
+    {
+        LocalStorageService.LogOut();
+        NavigationManager.NavigateTo("/");
+    }
+}

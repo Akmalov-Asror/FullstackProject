@@ -1,0 +1,284 @@
+﻿@page "/user/course"
+@using Blazor.Client.Service
+@using Blazor.Shared
+@inject HttpClient Http
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject ApiServices ApiServices
+@inject LocalStorageService LocalStorageService
+
+<head>
+    <script src="https://kit.fontawesome.com/82de9758c4.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+            text-decoration: none;
+        }
+
+        ul {
+            margin-bottom: 0;
+            padding: 0 !important;
+        }
+
+        a {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        header {
+            background-color: #fff;
+        }
+
+        .container-s {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header__container {
+            padding: 14px 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .header__container img {
+                margin: 0 auto;
+            }
+
+        .header__list {
+            display: flex;
+            gap: 30px;
+        }
+
+        .header__auth {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-left: auto;
+        }
+
+            .header__auth a {
+                cursor: pointer;
+            }
+
+        .header__logo {
+            display: flex;
+            align-items: center;
+            margin-right: auto;
+            cursor: pointer;
+        }
+
+            .header__logo img {
+                width: 42px;
+                height: 42px;
+            }
+
+        .contact__bg {
+            background-image: url(https://images.pexels.com/photos/5553050/pexels-photo-5553050.jpeg?auto=compress&cs=tinysrgb&w=1600);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            /* filter: brightness(40%); */
+            height: 300px;
+        }
+
+            .contact__bg h1 {
+                text-align: center;
+                font-size: 62px;
+                padding-top: 100px;
+                color: white;
+            }
+
+        .footer {
+            background: #111;
+            color: #949393 !important;
+        }
+
+        .footer__container {
+            display: flex;
+            gap: 250px;
+            padding-top: 70px;
+            padding-bottom: 54px;
+        }
+
+        .footer__item {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .footer__logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer__item img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+        }
+
+        .footer h6 {
+            color: #fff;
+        }
+
+        .footer h1 {
+            color: #fff;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .footer__p {
+            text-align: center;
+            color: #545454;
+            font-size: 12px;
+            padding-bottom: 24px;
+        }
+
+        .social__logo {
+            display: flex;
+            gap: 20px;
+            padding-top: 30px;
+        }
+
+        .footer__item a {
+            cursor: pointer;
+            color: #949393;
+        }
+
+        .social__logo {
+            cursor: pointer;
+        }
+
+
+        .section__course {
+            margin-top: 108px;
+            margin-bottom: 150px;
+        }
+
+        .course__title {
+            color: #000;
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 72px;
+        }
+
+        .row {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .col-4 {
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.10);
+            padding: 0;
+            cursor: pointer;
+        }
+
+            .col-4 img {
+                width: 380px;
+            }
+
+            .col-4 h6 {
+                color: #000;
+                font-size: 24px;
+                padding-left: 30px;
+                margin: 0;
+            }
+
+            .col-4 p {
+                padding-left: 30px;
+                color: #000;
+                font-size: 14px;
+                padding-bottom: 25px;
+            }
+
+        .active {
+            color: #113BA1 !important;
+        }
+    </style>
+</head>
+
+
+<header>
+    <div class="container-s ">
+        <div class="header__container">
+            <div class="header__logo" >
+                <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
+                <h1>URANUS</h1>
+            </div>
+            <UserHeader />
+        </div>
+    </div>
+</header>
+<section class="contact__bg">
+    <h1>Мои курсы</h1>
+</section>
+<section class="section__course">
+    <div class="container">
+        <div class="row">
+            @if (courses.Count <= 0)
+            {
+                <h1>No courses...</h1>
+            }
+            else
+            {
+                @foreach (var course in courses)
+                {
+                    <div class="col-4">
+                        <img src="@course.ImageUrl" alt="@course.Title">
+                        <h6>@course.Title</h6>
+                        <p>@course.Description</p>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+<Footer />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script>
+    function clearLocalStorage() {
+        localStorage.clear();
+    }
+</script>
+@code {
+    private string UserEmail { get; set; } = string.Empty;
+    List<Course> courses = new List<Course>();
+
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        var email = await LocalStorageService.GetEmailFromLocalStorage();
+        UserEmail = email;
+        if (string.IsNullOrEmpty(UserEmail))
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            var result = await ApiServices.GetUserCourses(UserEmail);
+
+            if (result != null)
+            {
+                courses = result;
+            }
+        }
+    }
+}
