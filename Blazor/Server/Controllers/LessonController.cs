@@ -11,6 +11,6 @@ public class LessonController : ControllerBase
     private readonly ILessonRepository _lessonRepository;
     public LessonController(ILessonRepository lessonRepository) => _lessonRepository = lessonRepository;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll(int courseId) => Ok(await _lessonRepository.GetLessonByCourseIdAsync(courseId));
+    [HttpGet("one")]
+    public async Task<IActionResult> GetAll(int id) => Ok(await _lessonRepository.GetLessonByCourseIdAsync(id));
 }

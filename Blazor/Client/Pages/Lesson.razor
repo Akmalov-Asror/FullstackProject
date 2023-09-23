@@ -1,4 +1,7 @@
 ﻿@page "/lesson"
+@using Blazor.Client.Service;
+@inject LocalStorageService LocalStorageService;
+@inject ApiServices ApiService;
 <style>
 
     .content {
@@ -224,7 +227,7 @@
             <div class="video">
                 <h2 class="video-title">1. Вводная часть</h2>
                 <div>
-                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/JbhBdOfMEPs?si=scLkeOSG8FggoCYC&amp;start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/JbhBdOfMEPs?si=5JfwgPwDCCzJ1mS9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </div>
             </div>
             <div >
@@ -234,7 +237,7 @@
             </div>
             <div class="video-2">
                 <div class="">
-                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/JbhBdOfMEPs?si=scLkeOSG8FggoCYC&amp;start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/JbhBdOfMEPs?si=5JfwgPwDCCzJ1mS9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </div>
             </div>
             <div>
@@ -302,5 +305,15 @@
     }
 </script>
 @code {
+    List<Blazor.Shared.Lesson> lessons = new List<Blazor.Shared.Lesson>();
 
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        var courseId = await LocalStorageService.GetCourseId();
+        var result = await ApiService.GetLesson(courseId);
+        if (result != null)
+        {
+            lessons = result;
+        }
+    }
 }

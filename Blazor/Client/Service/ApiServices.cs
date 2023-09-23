@@ -96,4 +96,9 @@ public class ApiServices
     {
         await _httpClient.PostAsJsonAsync("/api/User/course", userCourseDto);
     }
+    public async Task<List<Lesson>> GetLesson(string courseId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<List<Lesson>>("/api/Lesson/one?id=" + courseId);
+        return result;
+    }
 }
