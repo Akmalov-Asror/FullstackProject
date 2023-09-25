@@ -101,4 +101,9 @@ public class ApiServices
         var result = await _httpClient.GetFromJsonAsync<List<Lesson>>("/api/Lesson/one?id=" + courseId);
         return result;
     }
+    public async Task<List<Test>> GetTest(string lessonId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<List<Test>>("/api/Test/one?id=" + lessonId);
+        return result;
+    }
 }

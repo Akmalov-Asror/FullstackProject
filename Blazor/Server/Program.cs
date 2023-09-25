@@ -25,6 +25,7 @@ builder.Services.AddScoped<IEducationRepository, EducationRepository>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IResultRepository, ResultRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+builder.Services.AddScoped<ITestRepository, TestRepository>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

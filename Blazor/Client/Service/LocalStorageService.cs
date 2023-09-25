@@ -33,9 +33,15 @@ namespace Blazor.Client.Service
 
         public async Task<string> GetCourseId()
         {
-            var courseId = await _jsruntime.InvokeAsync<string>("localStorage.getItem", "courseId");
+            var courseId = await _jsruntime.InvokeAsync<string>("sessionStorage.getItem", "courseId");
 
             return courseId;
+        }
+        public async Task<string> GetLessonId()
+        {
+            var lessonId = await _jsruntime.InvokeAsync<string>("sessionStorage.getItem", "lessonId");
+
+            return lessonId;
         }
     }
 }

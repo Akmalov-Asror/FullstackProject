@@ -1,0 +1,228 @@
+﻿@page "/test"
+@using Blazor.Client.Service
+@inject ApiServices ApiServices
+@inject IJSRuntime JSRuntime
+@inject LocalStorageService LocalStorageService 
+
+<head>
+    <style>
+        p {
+            margin: 10px !important;
+        }
+
+        h1 {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 24px;
+        }
+
+        ul {
+            list-style: none;
+            margin-left: 20px;
+        }
+
+        li {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 18px;
+        }
+
+        .timer {
+            position: fixed;
+            bottom: 50px;
+            right: 100px;
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .container-s {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .test {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .test__item {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .choice {
+            font-size: 16px;
+            font-weight: 300;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 0.5px solid #000;
+            cursor: pointer;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .title {
+            margin-bottom: 50px;
+        }
+
+        .green {
+            background-color: green !important;
+        }
+
+        .red {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<div class="container-s">
+    <div class="timer" id="countdown">00:10</div>
+    <h1 class="title">Тесты для закрепление</h1>
+    @if (tests.Count <= 0)
+    {
+        <h1>No tests...</h1>
+    }
+    else
+    {
+        @foreach (var course in tests)
+        {
+            answers.Add(course.RightOption);
+            <div class="question-container">
+                <h1>@questionNumber @course.Question</h1>
+                <ul>
+                    <div class="test__item">
+                        <p class="choice">A</p>
+                    <li>@course.Options[0]</li>
+            </div>
+            <div class="test__item">
+                <p class="choice">Б</p>
+                <li>@course.Options[1]</li>
+            </div>
+            <div class="test__item">
+                <p class="choice">В</p>
+                <li>@course.Options[2]</li>
+            </div>
+            <div class="test__item">
+                <p class="choice">Г</p>
+                <li>@course.Options[3]</li>
+            </div>
+            <h6 style="display:none">@course.RightOption</h6>
+            </ul>
+        </div>
+            questionNumber++;
+        }
+    }
+    </div>
+
+<script>
+    let clickEnabled = true;
+
+    setTimeout(function () {
+        const containers = document.querySelectorAll('.question-container');
+        containers.forEach(function (container) {
+            const choices = container.querySelectorAll('.choice');
+            choices.forEach(function (choice) {
+                choice.addEventListener('click', function (evt) {
+                    if (clickEnabled) {
+                        choices.forEach(function (c) {
+                            c.classList.remove('yellow');
+                        });
+                        evt.target.classList.add('yellow');
+                    }
+                });
+            });
+        });
+    }, 1000);
+
+    const timerElement = document.getElementById('countdown');
+    const initialTime = timerElement.textContent.split(':');
+    let minutes = parseInt(initialTime[0]);
+    let seconds = parseInt(initialTime[1]);
+
+    function updateCountdown() {
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = seconds.toString().padStart(2, '0');
+        timerElement.textContent = `${formattedMinutes}:${formattedSeconds}`;
+
+        if (minutes === 0 && seconds === 0) {
+            clearInterval(timerInterval);
+            check();
+        } else {
+            if (seconds === 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                seconds--;
+            }
+        }
+    }
+
+    updateCountdown();
+
+    const timerInterval = setInterval(updateCountdown, 1000);
+
+    function check() {
+        clickEnabled = false;
+        const questionContainers = document.querySelectorAll('.question-container');
+        let count = 0;
+        let not = 0;
+        questionContainers.forEach(function (container) {
+            count++;
+            const questionText = container.querySelector('h1').textContent;
+            console.log(questionText);
+            const p = container.querySelector(".yellow");
+            console.log(p);
+            if (p !== null) {
+                const li = p.nextElementSibling.textContent;
+                console.log(li);
+                const h6 = container.querySelector("h6").textContent;
+                if (questionText.startsWith(count)) {
+                    if (li === h6) {
+                        p.classList.remove('yellow');
+                        p.classList.add('green');
+                    }
+                    else {
+                        p.classList.remove('yellow');
+                        p.classList.add('red');
+                    }
+                }
+            }
+            else {
+                not++;
+            }
+        });
+        const redChoices = document.querySelectorAll('.red');
+        const redLength = redChoices.length;
+        const result = (100 / count) * (count - (redLength + not));
+        if (result > 70) {
+            timerElement.style.color = 'green';
+        }
+        if (result >= 50 && result <= 69) {
+            timerElement.style.color = 'yellow';
+        }
+        if (result < 50) {
+            timerElement.style.color = 'red';
+        }
+        timerElement.innerHTML = `Вы прошли тест на  ${result}%`
+    }
+
+</script>
+@code {
+    private List<string> answers = new List<string>();
+    private int questionNumber = 1;
+    private Dictionary<int, string> selectedChoices = new Dictionary<int, string>();
+
+    private List<Blazor.Shared.Test> tests = new List<Blazor.Shared.Test>();
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        var lessonId = await LocalStorageService.GetLessonId();
+        var test = await ApiServices.GetTest(lessonId);
+        if (test is not null)
+        {
+            tests = test;
+        }
+    }
+}

@@ -241,7 +241,7 @@
             {
                 @foreach (var course in courses)
                 {
-                    <div class="col-4">
+                    <div class="col-4" @onclick="() => ToLesson(course)">
                         <img src="@course.ImageUrl" alt="@course.Title">
                         <h6>@course.Title</h6>
                         <p>@course.Description</p>
@@ -280,5 +280,10 @@
                 courses = result;
             }
         }
+    }
+    async void ToLesson(Course course)
+    {
+        await JsRuntime.InvokeVoidAsync("sessionStorage.setItem", "courseId", course.Id);
+        NavigationManager.NavigateTo(NavigationUrls.ToLesson);
     }
 }

@@ -2,6 +2,8 @@
 @using Blazor.Client.Service;
 @inject LocalStorageService LocalStorageService;
 @inject ApiServices ApiService;
+@inject IJSRuntime JsRuntime;
+@inject NavigationManager NavigationManager;
 <style>
 
     .content {
@@ -195,6 +197,7 @@
             height: 42px;
         }
 </style>
+
 <header>
     <div class="container-s">
         <div class="header__container">
@@ -206,104 +209,89 @@
         </div>
     </div>
 </header>
+
 <section class="content">
     <div class="container-s content__container">
-        <div class="over">
-            <h1>Содержание</h1>
-            <div class="content-title">
-                <h6>1. Вводная часть</h6>
-                <h6>2. Вводная часть</h6>
-                <h6>3. Вводная часть</h6>
-                <h6>4. Вводная часть</h6>
-                <h6>5. Вводная часть</h6>
-                <h6>6. Вводная часть</h6>
-                <h6>7. Вводная часть</h6>
-                <h6>8. Вводная часть</h6>
-                <h6>9. Вводная часть</h6>
-                <h6>10. Вводная часть</h6>
-            </div>
-        </div>
-        <div>
-            <div class="video">
-                <h2 class="video-title">1. Вводная часть</h2>
-                <div>
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/JbhBdOfMEPs?si=5JfwgPwDCCzJ1mS9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                </div>
-            </div>
-            <div >
-                <h2 class="text">Допольнительная информация</h2>
-                <p class="video-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu laoreet elit. Phasellus eget est nunc. Donec efficitur justo at fringilla feugiat. Praesent vitae odio feugiat, venenatis ligula ut, ultricies dolor. Curabitur ac enim non felis imperdiet dignissim non vitae massa. Cras sollicitudin sit amet mi ut feugiat. Morbi finibus aliquam feugiat. Mauris rhoncus, ante vitae scelerisque rutrum, nulla sapien rutrum dui, eget convallis nulla massa eget nibh. Donec nec risus et orci porta sagittis. Nunc tincidunt sagittis fringilla. Sed at est in erat elementum rhoncus eu eu urna. Cras pulvinar, dui id mollis dapibus, nulla dolor convallis elit, a pharetra enim nunc sit amet neque. Donec leo dui, interdum quis nisl a, gravida faucibus nunc. Ut lectus magna, venenatis vitae velit sed, semper rhoncus ipsum. Phasellus tellus est, ultricies vel porttitor eget, sodales in nunc.</p>
-                <p >Morbi at quam commodo, vulputate lacus quis, varius justo. Etiam gravida sem magna, a gravida metus tincidunt eu. Donec ligula enim, ultrices quis viverra ut, fermentum eu est. Phasellus eget dictum est. Aenean molestie risus ac ullamcorper efficitur. Duis tristique tellus enim, sit amet convallis purus interdum porttitor. Quisque pulvinar gravida vulputate. Aenean dictum at ex in malesuada.</p>
-            </div>
-            <div class="video-2">
-                <div class="">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/JbhBdOfMEPs?si=5JfwgPwDCCzJ1mS9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        @if (lessons.Count > 0)
+        {
+            <div class="over">
+                <h1>Содержание</h1>
+                <div class="content-title">
+                    @foreach (var lesson in lessons)
+                    {
+                        <h6>@lesson.Title</h6>
+                    }
                 </div>
             </div>
             <div>
-                <h2>Допольнительная информация</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu laoreet elit. Phasellus eget est nunc. Donec efficitur justo at fringilla feugiat. Praesent vitae odio feugiat, venenatis ligula ut, ultricies dolor. Curabitur ac enim non felis imperdiet dignissim non vitae massa. Cras sollicitudin sit amet mi ut feugiat. Morbi finibus aliquam feugiat. Mauris rhoncus, ante vitae scelerisque rutrum, nulla sapien rutrum dui, eget convallis nulla massa eget nibh. Donec nec risus et orci porta sagittis. Nunc tincidunt sagittis fringilla. Sed at est in erat elementum rhoncus eu eu urna. Cras pulvinar, dui id mollis dapibus, nulla dolor convallis elit, a pharetra enim nunc sit amet neque. Donec leo dui, interdum quis nisl a, gravida faucibus nunc. Ut lectus magna, venenatis vitae velit sed, semper rhoncus ipsum. Phasellus tellus est, ultricies vel porttitor eget, sodales in nunc.</p>
-                <p>Morbi at quam commodo, vulputate lacus quis, varius justo. Etiam gravida sem magna, a gravida metus tincidunt eu. Donec ligula enim, ultrices quis viverra ut, fermentum eu est. Phasellus eget dictum est. Aenean molestie risus ac ullamcorper efficitur. Duis tristique tellus enim, sit amet convallis purus interdum porttitor. Quisque pulvinar gravida vulputate. Aenean dictum at ex in malesuada.</p>
-            </div>
-            <div class="item-button">
-                <button class="button">Пройти тест</button>
-            </div>
-            <div class="imports">
-                <div class="document">
-                    <div class="document-list">
-                        <h2 class="document-head">Название документа</h2>
-                        <p class="document-title">Название документа</p>
-                        <a href="" class="link">скачать документ</a>
-                    </div>
-                    <div class="second-doc">
-                        <img src="images/Group 370.svg" >
+                <div class="video">
+                    <h2 class="video-title">@lessons[0].Title</h2>
+                    <div>
+                        <iframe width="560" height="315" src="@lessons[0].VideoUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="document">
-                    <div class="document-list">
-                        <h2 class="document-head">Название документа</h2>
-                        <p class="document-title">Название документа</p>
-                        <a href="" class="link">скачать документ</a>
-                    </div>
-                    <div class="second-doc">
-                        <img src="images/Group 370.svg" >
-                    </div>
+                <div>
+                    <h2 class="text">Допольнительная информация</h2>
+                    <p class="video-text">@lessons[0].Information</p>
                 </div>
-                <div class="document">
-                    <div class="document-list">
-                        <h2 class="document-head">Название документа</h2>
-                        <p class="document-title">Название документа</p>
-                        <a href="" class="link">скачать документ</a>
-                    </div>
-                    <div class="second-doc">
-                        <img src="images/Group 370.svg" >
-                    </div>
+                <div class="item-button">
+                    <button class="button" @onclick="() => ToTest(lessons[0])">Пройти тест</button>
                 </div>
-                <div class="document">
-                    <div class="document-list">
-                        <h2 class="document-head">Название документа</h2>
-                        <p class="document-title">Название документа</p>
-                        <a href="" class="link">скачать документ</a>
+                <div class="imports">
+                    <div class="document">
+                        <div class="document-list">
+                            <h2 class="document-head">Название документа</h2>
+                            <p class="document-title">Название документа</p>
+                            <a href="" class="link">скачать документ</a>
+                        </div>
+                        <div class="second-doc">
+                            <img src="images/Group 370.svg" >
+                        </div>
                     </div>
-                    <div class="second-doc">
-                        <img src="images/Group 370.svg" >
+                    <div class="document">
+                        <div class="document-list">
+                            <h2 class="document-head">Название документа</h2>
+                            <p class="document-title">Название документа</p>
+                            <a href="" class="link">скачать документ</a>
+                        </div>
+                        <div class="second-doc">
+                            <img src="images/Group 370.svg" >
+                        </div>
                     </div>
-                </div></div>
-            <div class="item-btn">
-                <button class="second-button">Предыдущий урок</button>
-                <button class="second-button">Следующий урок</button>
+                    <div class="document">
+                        <div class="document-list">
+                            <h2 class="document-head">Название документа</h2>
+                            <p class="document-title">Название документа</p>
+                            <a href="" class="link">скачать документ</a>
+                        </div>
+                        <div class="second-doc">
+                            <img src="images/Group 370.svg" >
+                        </div>
+                    </div>
+                    <div class="document">
+                        <div class="document-list">
+                            <h2 class="document-head">Название документа</h2>
+                            <p class="document-title">Название документа</p>
+                            <a href="" class="link">скачать документ</a>
+                        </div>
+                        <div class="second-doc">
+                            <img src="images/Group 370.svg" >
+                        </div>
+                    </div></div>
+                <div class="item-btn">
+                    <button class="second-button">Предыдущий урок</button>
+                    <button class="second-button">Следующий урок</button>
+                </div>
             </div>
-        </div>
-            
+        }
+        else
+        {
+            <p>No Lessons ...</p>
+        }
     </div>
 </section>
 <Footer />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-<script>
-    function clearLocalStorage() {
-        localStorage.clear();
-    }
-</script>
 @code {
     List<Blazor.Shared.Lesson> lessons = new List<Blazor.Shared.Lesson>();
 
@@ -316,5 +304,18 @@
             lessons = result;
         }
     }
-   // private readonly string all;
+
+    async void ToTest(Blazor.Shared.Lesson lesson)
+    {
+        var result = await JsRuntime.InvokeAsync<bool>("confirm", "Your test will start immediately! Are you ready?");
+        if (result)
+        {
+            await JsRuntime.InvokeVoidAsync("sessionStorage.setItem", "lessonId", lesson.Id);
+            NavigationManager.NavigateTo(NavigationUrls.ToTest);
+        }
+        else 
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Canceled");
+        }
+    }
 }

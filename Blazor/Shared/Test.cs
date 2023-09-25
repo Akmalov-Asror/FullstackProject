@@ -9,5 +9,6 @@
         public List<string> Options { get; set; }
 
         public string RightOption { get; set; }
+        public Lesson Lesson { get; set; }
     }
 }
