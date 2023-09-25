@@ -225,17 +225,17 @@
             </div>
             <div>
                 <div class="video">
-                    <h2 class="video-title">@lessons[0].Title</h2>
+                    <h2 class="video-title">@lessons[index].Title</h2>
                     <div>
-                        <iframe width="560" height="315" src="@lessons[0].VideoUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        <iframe width="560" height="315" src="@lessons[index].VideoUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                 </div>
                 <div>
                     <h2 class="text">Допольнительная информация</h2>
-                    <p class="video-text">@lessons[0].Information</p>
+                    <p class="video-text">@lessons[index].Information</p>
                 </div>
                 <div class="item-button">
-                    <button class="button" @onclick="() => ToTest(lessons[0])">Пройти тест</button>
+                    <button class="button" @onclick="() => ToTest(lessons[index])">Пройти тест</button>
                 </div>
                 <div class="imports">
                     <div class="document">
@@ -279,20 +279,36 @@
                         </div>
                     </div></div>
                 <div class="item-btn">
-                    <button class="second-button">Предыдущий урок</button>
-                    <button class="second-button">Следующий урок</button>
+                    <button class="second-button prev" style="opacity: 0.5" @onclick="Previous">Предыдущий урок</button>
+                    <button class="second-button next" @onclick="Next">Следующий урок</button>
                 </div>
             </div>
         }
         else
         {
             <p>No Lessons ...</p>
-        }
+        } 
     </div>
 </section>
 <Footer />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script>
+    function changeOpacity(btn) {
+        const prev = document.querySelector('.prev');
+        const next = document.querySelector('.next');
+        prev.style.opacity = '1';
+        next.style.opacity = '1';   
+        const button = document.querySelector('.' + btn);
+        button.style.opacity = '0.5';
+
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
 @code {
+    private int index = 0;
     List<Blazor.Shared.Lesson> lessons = new List<Blazor.Shared.Lesson>();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
@@ -318,4 +334,30 @@
             await JsRuntime.InvokeVoidAsync("alert", "Canceled");
         }
     }
+    async void Next()
+    {
+        if (lessons.Count > 1 && lessons.Count - 1 != index)
+        {
+            index++;
+            await JsRuntime.InvokeVoidAsync("scrollToTop", "");
+        }
+        if (index == lessons.Count - 1)
+        {
+            await JsRuntime.InvokeVoidAsync("changeOpacity", "next");
+        }
+    }
+
+    async void Previous()
+    {
+        if (index != 0)
+        {
+            index--;
+            await JsRuntime.InvokeVoidAsync("scrollToTop", "");
+        }
+        if (index == 0)
+        {
+            await JsRuntime.InvokeVoidAsync("changeOpacity", "prev");
+        }
+    }
+    
 }

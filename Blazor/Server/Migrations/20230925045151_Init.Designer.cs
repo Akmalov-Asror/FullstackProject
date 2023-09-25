@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Blazor.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230921040901_Init")]
+    [Migration("20230925045151_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -311,6 +311,9 @@ namespace Blazor.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("LessonId")
+                        .HasColumnType("integer");
+
                     b.Property<List<string>>("Options")
                         .IsRequired()
                         .HasColumnType("text[]");
@@ -324,6 +327,8 @@ namespace Blazor.Server.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
 
                     b.ToTable("Test");
                 });
@@ -449,6 +454,17 @@ namespace Blazor.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Task");
+                });
+
+            modelBuilder.Entity("Blazor.Shared.Test", b =>
+                {
+                    b.HasOne("Blazor.Shared.Lesson", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
                 });
 
             modelBuilder.Entity("Blazor.Shared.User", b =>

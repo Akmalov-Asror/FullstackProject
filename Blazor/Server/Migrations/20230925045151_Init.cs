@@ -44,21 +44,6 @@ namespace Blazor.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Test",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Question = table.Column<string>(type: "text", nullable: false),
-                    Options = table.Column<List<string>>(type: "text[]", nullable: false),
-                    RightOption = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Test", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -216,6 +201,28 @@ namespace Blazor.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Test",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Question = table.Column<string>(type: "text", nullable: false),
+                    Options = table.Column<List<string>>(type: "text[]", nullable: false),
+                    RightOption = table.Column<string>(type: "text", nullable: false),
+                    LessonId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Test", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Test_Lesson_LessonId",
+                        column: x => x.LessonId,
+                        principalTable: "Lesson",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Homework",
                 columns: table => new
                 {
@@ -305,6 +312,11 @@ namespace Blazor.Server.Migrations
                 name: "IX_TaskAnswer_TaskId",
                 table: "TaskAnswer",
                 column: "TaskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Test_LessonId",
+                table: "Test",
+                column: "LessonId");
         }
 
         /// <inheritdoc />
