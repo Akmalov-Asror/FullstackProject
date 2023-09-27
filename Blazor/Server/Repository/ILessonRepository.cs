@@ -5,5 +5,7 @@ namespace Blazor.Server.Repository;
 
 public interface ILessonRepository
 {
-    Task<List<Lesson>> GetLessonByCourseIdAsync(int courseId);
+    Task<List<Lesson>> GetLessonsByCourseId(int courseId);
+    Task<Lesson> GetLessonById(int id);
+    Task<List<Lesson>> GetLessonAndTaskByCourseId(int courseId);
 }

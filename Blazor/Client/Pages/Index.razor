@@ -278,7 +278,7 @@
     <div class="container study">
         <h1 class="section__study-title">Хотите научиться профессионально инвестировать и всегда оставаться в плюсе?</h1>
         <p class="section__study-descr">Грамотно разберем вашу финансовую ситуацию, разработаем стратегию и поможем эффективно инвестировать</p>
-        <a href="/aboutcourse" class="section__study-btn">Записаться на курс</a>
+        <a @onclick="ToAboutCourse" class="section__study-btn">Записаться на курс</a>
     </div>
 </section>
 <section class="section__course-s">
@@ -352,5 +352,10 @@
     void ToLogin()
     {
         NavigationManager.NavigateTo(NavigationUrls.ToLogin);
+    }
+
+    void ToAboutCourse()
+    {
+        NavigationManager.NavigateTo(NavigationUrls.ToAboutCourse);
     }
 }

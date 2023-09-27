@@ -20,7 +20,10 @@ namespace Blazor.Server.Repository.Impl
         {
            return (await _context.Homework.Include(h => h.Task).FirstOrDefaultAsync(h => h.Id == id))!;
         }
+        public async Task<Homework> GetHomeworkByTaskId(int taskId)
+        {
+            return (await _context.Homework.Include(h => h.Task).FirstOrDefaultAsync(h => h.Task.Id == taskId))!;
+        }
 
-        
     }
 }

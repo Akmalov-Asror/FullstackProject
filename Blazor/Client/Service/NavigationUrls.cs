@@ -1,4 +1,6 @@
-﻿namespace Blazor.Client.Service;
+﻿using Blazor.Client.Pages;
+
+namespace Blazor.Client.Service;
 
 public class NavigationUrls
 {
@@ -14,4 +16,5 @@ public class NavigationUrls
     public const string ToAnswer = "/answer";
     public const string ToLesson = "/lesson";
     public const string ToTest = "/test";
+    public const string ToAboutCourse = "/aboutcourse";
 }

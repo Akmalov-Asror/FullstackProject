@@ -240,18 +240,26 @@
         <div class="over">
             <h1>Содержание</h1>
             <div class="content-title">
-                <h6>1.@task.Title</h6>
+                @foreach (var lesson in lessons)
+                {
+                    <h6 @onclick="() => ToAnotherTask(lesson)">@lesson.Title</h6>
+                }
             </div>
         </div>
-        <div>
-            <div class="values" @onclick="ToAnswer">
-                <h2>@task.Title</h2>
-                <p>@task.Description</p>
-                <div class="date">
-                    <p>Срок выполнения: @task.DateTime</p>
-                    <p>@task.Process</p>
+        <div style="display:flex; flex-direction:column; gap:30px">
+               
+            @foreach (var t in tasks)
+            {
+                <div class="values" @onclick="() => ToAnswer(t)">
+                    <h2>@t.Title</h2>
+                    <p>@t.Description</p>
+                    <div class="date">
+                        <p>Срок выполнения: @t.DateTime</p>
+                        <p>@t.Process</p>
+                    </div>
                 </div>
-            </div>
+            }
+                
         </div>
     </div>
 </section>
@@ -265,9 +273,10 @@
 
 @code {
     private string UserEmail { get; set; } = string.Empty;
-    private string TaskId { get; set; } = string.Empty;
-    private Blazor.Shared.Task task = new Blazor.Shared.Task();
-
+    private string CourseId = String.Empty;
+    private int index = 0;
+    private List<Blazor.Shared.Task> tasks = new List<Blazor.Shared.Task>();
+    private List<Blazor.Shared.Lesson> lessons = new List<Blazor.Shared.Lesson>();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
@@ -280,26 +289,31 @@
         }
         else
         {
-            var result = await ApiServices.GetTask(TaskId);
-            if (result is not null)
-            {
-                task = result;
-            }   
+            var result = await ApiServices.GetLessonAndTaskByCourseId(CourseId);
+            lessons = result;
+            tasks = lessons[0].Tasks;
         }
     }
 
     private async System.Threading.Tasks.Task GetTaskIdFromLocalStorage()
     {
-        var taskId = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "taskId");
+        var courseId = await JsRuntime.InvokeAsync<string>("sessionStorage.getItem", "courseId");
 
-        if (!string.IsNullOrEmpty(taskId))
+        if (!string.IsNullOrEmpty(courseId))
         {
-            TaskId = taskId;
+            CourseId = courseId;
         }
     }
 
-    void ToAnswer()
+    async void ToAnswer(Blazor.Shared.Task task)
     {
+        await JsRuntime.InvokeVoidAsync("sessionStorage.setItem", "taskId", task.Id);
+
         NavigationManager.NavigateTo(NavigationUrls.ToAnswer);
+    }
+
+    void ToAnotherTask(Blazor.Shared.Lesson lesson)
+    {
+        tasks = lesson.Tasks;
     }
 }

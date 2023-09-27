@@ -302,20 +302,32 @@
         button.style.opacity = '0.5';
 
     }
+    function OpaciteChangeZero(btn)
+    {
+        const prev = document.querySelector('.prev');
+        const next = document.querySelector('.next');
+        prev.style.opacity = '0.51';
+        next.style.opacity = '0.5';
+    }
 
     function scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 @code {
+    private string courseId = String.Empty;
     private int index = 0;
     List<Blazor.Shared.Lesson> lessons = new List<Blazor.Shared.Lesson>();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        var courseId = await LocalStorageService.GetCourseId();
+        var course = await LocalStorageService.GetCourseId();
+        if (course is not null)
+        {
+            courseId = course;
+        }
         var result = await ApiService.GetLesson(courseId);
-        if (result != null)
+        if (result is not null)
         {
             lessons = result;
         }
@@ -336,28 +348,46 @@
     }
     async void Next()
     {
-        if (lessons.Count > 1 && lessons.Count - 1 != index)
+        if (index == 0)
         {
-            index++;
-            await JsRuntime.InvokeVoidAsync("scrollToTop", "");
+            await JsRuntime.InvokeVoidAsync("OpaciteChangeZero", "prev");
+            await JsRuntime.InvokeVoidAsync("OpaciteChangeZero", "next");
         }
-        if (index == lessons.Count - 1)
+        else
         {
-            await JsRuntime.InvokeVoidAsync("changeOpacity", "next");
+            if (lessons.Count > 1 && lessons.Count - 1 != index)
+            {
+                index++;
+                await JsRuntime.InvokeVoidAsync("scrollToTop", "");
+            }
+            if (index == lessons.Count - 1)
+            {
+                await JsRuntime.InvokeVoidAsync("changeOpacity", "next");
+            }
         }
     }
 
     async void Previous()
     {
-        if (index != 0)
-        {
-            index--;
-            await JsRuntime.InvokeVoidAsync("scrollToTop", "");
-        }
         if (index == 0)
         {
-            await JsRuntime.InvokeVoidAsync("changeOpacity", "prev");
+            await JsRuntime.InvokeVoidAsync("OpaciteChangeZero", "prev");
+            await JsRuntime.InvokeVoidAsync("OpaciteChangeZero", "next");
         }
+        else
+        {
+            if (index != 0)
+            {
+                index--;
+                await JsRuntime.InvokeVoidAsync("scrollToTop", "");
+            }
+            if (index == 0)
+            {
+                await JsRuntime.InvokeVoidAsync("changeOpacity", "prev");
+            }
+        }
+        
     }
+
     
 }

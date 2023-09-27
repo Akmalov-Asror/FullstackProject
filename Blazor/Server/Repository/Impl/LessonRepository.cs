@@ -10,9 +10,17 @@ public class LessonRepository : ILessonRepository
 
     public LessonRepository(AppDbContext context) => _context = context;
 
-    public async Task<List<Lesson>> GetLessonByCourseIdAsync(int courseId)
+    public async Task<List<Lesson>> GetLessonsByCourseId(int courseId)
     {
         var course = await _context.Lesson.Where(l => l.Course.Id == courseId).ToListAsync();
         return course;
+    }
+    public async Task<Lesson> GetLessonById(int id)
+    {
+        return await _context.Lesson.FirstOrDefaultAsync(l => l.Id == id);
+    }
+    public async Task<List<Lesson>> GetLessonAndTaskByCourseId(int courseId)
+    {
+        return await _context.Lesson.Include(l => l.Tasks).Where(l => l.Course.Id == courseId).ToListAsync();
     }
 }

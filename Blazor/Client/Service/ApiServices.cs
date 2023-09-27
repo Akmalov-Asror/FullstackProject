@@ -106,4 +106,33 @@ public class ApiServices
         var result = await _httpClient.GetFromJsonAsync<List<Test>>("/api/Test/one?id=" + lessonId);
         return result;
     }
+    public async Task<List<Blazor.Shared.Lesson>> GetLessons(string courseId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<List<Blazor.Shared.Lesson>>("/api/Lesson/one?id=" + courseId);
+        return result;
+    }
+
+    public async Task<Blazor.Shared.Homework> GetHomeworkByTaskId(string taskId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<Blazor.Shared.Homework>("/api/Homework/task?id=" + taskId);
+        return result;
+    }
+
+
+    public async Task<Blazor.Shared.Lesson> GetOneLesson(string lessonId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<Blazor.Shared.Lesson>("/api/Lesson/lesson?id=" + lessonId);
+        return result;
+    }
+
+
+    public async Task<List<Blazor.Shared.Task>> GetTaskByLessonId(string lessonId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<List<Blazor.Shared.Task>>("/api/Task/lesson?id=" + lessonId);
+        return result;
+    }
+    public async Task<List<Blazor.Shared.Lesson>> GetLessonAndTaskByCourseId(string courseId)
+    {
+        return (await _httpClient.GetFromJsonAsync<List<Blazor.Shared.Lesson>>("/api/Lesson/task?id=" + courseId))!;
+    }
 }
